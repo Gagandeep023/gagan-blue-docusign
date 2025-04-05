@@ -133,3 +133,6 @@ npm install
 npm start
 ```
 
+4. The application will prompt you for DocuSign authentication. Currently, only an admin can share the credentials.
+
+
