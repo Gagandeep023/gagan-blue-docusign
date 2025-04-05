@@ -1,0 +1,76 @@
+<%- include("../partials/genericHead") %>
+<!-- Add PDF.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+  // Set the worker source
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+</script>
+
+<!-- Add meta tag for document name -->
+<meta name="doc-name" content="<%= docName %>">
+
+<!-- Add our modular JavaScript files -->
+<script src="/public/js/pdf-viewer/PDFViewer.js"></script>
+<script src="/public/js/signers/signers.js"></script>
+<script src="/public/js/blocks/blocks.js"></script>
+<script src="/public/js/main.js"></script>
+
+<div style="text-align: center; margin: 20px 0;">
+  <button id="create-doc-for-signing" style="padding: 10px 20px; font-size: 16px; background-color: #ccc; color: #fff; border: none; border-radius: 5px; cursor: not-allowed; margin-left: 10px;" disabled>
+    Send Documents
+  </button>
+  <button id="add-text-block" style="padding: 10px 20px; font-size: 16px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: not-allowed; margin-left: 10px;" disabled>
+    Add Text Block
+  </button>
+  <button id="add-signature-block" style="padding: 10px 20px; font-size: 16px; background-color: #28a745; color: #fff; border: none; border-radius: 5px; cursor: not-allowed; margin-left: 10px;" disabled>
+    Add Signature Block
+  </button>
+  <span id="page-number" style="margin-left: 20px; font-size: 16px;">Page: <span id="current-page">1</span></span>
+</div> 
+
+<div id="blocks-container" style="padding: 0px 0px">
+</div>
+
+<div id="pdf-container" style="padding: 10px; width: 100%;">
+</div>
+
+<div id="signers-container" style="margin: 40px 0; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9;">
+  <h3 style="font-family: Arial, sans-serif; color: #333;">Signers Information</h3>
+  <div id="signer-forms">
+    <div class="signer-form" style="margin-bottom: 15px;">
+      <input type="text" name="signerName[]" placeholder="Signer Name" required style="width: calc(50% - 10px); padding: 10px; margin-right: 10px; border: 1px solid #ccc; border-radius: 4px;">
+      <input type="email" name="signerEmail[]" placeholder="Signer Email" required style="width: calc(50% - 10px); padding: 10px; border: 1px solid #ccc; border-radius: 4px;" oninput="validateEmail(this)">
+      <div class="email-error" style="color: red; display: none; font-size: 12px;">Please enter a valid email address.</div>
+      <input type="hidden" name="signerId[]" value="<%= Math.random().toString(36).substr(2, 9) %>">
+    </div>
+  </div>
+  <button type="button" id="add-signer" style="padding: 12px 25px; font-size: 16px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">
+    + Add Another Signer
+  </button>
+  <div id="error-message" style="color: red; display: none; margin-top: 10px; font-size: 14px;">You can only add up to 5 signers.</div>
+  
+  <!-- Dropdown for selecting signer -->
+  <div style="margin-top: 20px;">
+    <label for="signer-select" style="font-size: 16px;">Select Signer:</label>
+    <select id="signer-select" style="padding: 10px; margin-left: 10px; border: 1px solid #ccc; border-radius: 4px;">
+      <option value="">-- Select Signer --</option>
+      <div id="signer-options"></div>
+    </select>
+  </div>
+</div>
+
+<script>
+  // Initialize the application
+  document.addEventListener('DOMContentLoaded', function() {
+    // // Initialize PDF viewer
+    // const docName = '<%= docName %>';
+    // const viewer = new PDFViewer('pdf-container', '/documents/' + docName);
+    
+    // // // Initialize signers
+    // initializeSigners(); // Ensure this function is defined in the included scripts
+    
+    // // Initialize blocks
+    // initializeBlocks();
+  });
+
+</script>

@@ -1,0 +1,11 @@
+<%- include("../partials/genericHead") %>
+<div style="text-align: center; margin: 20px 0;">
+  <button onclick="window.location.href='/edit-doc?docName=<%= docName %>'" style="padding: 10px 20px; font-size: 16px; background-color: #007BFF; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Send Document Envelope
+  </button>
+</div> 
+
+<div>
+  <iframe src="/documents/<%= docName %>" style="width:100vw; height:100vh; border:none;"></iframe>
+</div>
+ 
