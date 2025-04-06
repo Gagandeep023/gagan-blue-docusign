@@ -105,8 +105,8 @@ class PDFGenerator {
 
   async addEditableTextAnnotation(page, text, x, y, viewport) {
     page.drawText(text, {
-      x: this.scaleX(x, viewport),
-      y: this.scaleY(y, viewport),
+      x: this.scaleX(x+4, viewport),
+      y: this.scaleY(y + 15, viewport),
       size: 12,
       color: PDFLib.rgb(0, 0, 0),
     });
