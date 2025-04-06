@@ -187,8 +187,13 @@ async function submitDocument() {
     const blockPosition = block.querySelector('input[name="blockPosition[]"]').value;
     const blockPage = block.querySelector('input[name="blockPage[]"]').value;
     const blockLeft = Math.floor(((Number(blockPosition.split(',')[0].replace('px', '')) - blockLeftBuffer) / blockWidth) * 600);
-    const blockTop = Math.floor(((Number(blockPosition.split(',')[1].replace('px', '')) - blockTopBuffer) / blockHeight) * 820);
+    let blockTop = Math.floor(((Number(blockPosition.split(',')[1].replace('px', '')) - blockTopBuffer) / blockHeight) * 820);
     const blockSignerId = block.querySelector('input[name="signerId[]"]').value;
+    if (blockType === 'editable-text') {
+      blockTop = blockTop + 10;
+      const blockText = block.querySelector('input[name="blockText[]"]').value;
+      return { blockId, blockType, blockLeft, blockTop, blockPage, blockSignerId, blockText };
+    }
     return { blockId, blockType, blockLeft, blockTop, blockPage, blockSignerId };
   });
 
