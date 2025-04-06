@@ -116,9 +116,9 @@ class PDFGenerator {
     // Draw comment box
     page.drawRectangle({
       x: this.scaleX(x, viewport),
-      y: this.scaleY(y + 100, viewport),
+      y: this.scaleY(y, viewport),
       width: 160,
-      height: 100,
+      height: 20,
       color: PDFLib.rgb(1, 0.97, 0.88),
       borderColor: PDFLib.rgb(1, 0.76, 0.03),
       borderWidth: 2,
@@ -127,20 +127,54 @@ class PDFGenerator {
 
     page.drawText("Comment", {
         x: this.scaleX(x + 5, viewport),
-        y: this.scaleY(y+20, viewport),
-        size: 16,
+        y: this.scaleY(y - 5, viewport),
+        size: 14,
         color: PDFLib.rgb(1, 0.65, 0), // Orange text (#ffa500)
         maxWidth: 190,
     });
 
+    console.log(text);
     // Add comment text
-    page.drawText(text, {
-      x: this.scaleX(x + 5, viewport),
-      y: this.scaleY(y + 40, viewport),
-      size: 14,
-      color: PDFLib.rgb(0, 0, 0),
-      maxWidth: 190,
-    });
+    const textWidth = text.length;
+    console.log(textWidth);
+    if (textWidth > 190) {
+      // If the text exceeds maxWidth, split it into multiple lines
+      const words = text.split(' ');
+      let currentLine = '';
+      let lines = [];
+
+      for (const word of words) {
+        const testLine = currentLine + word + ' ';
+        const testWidth = PDFLib.widthOfTextAtSize(testLine, 12);
+        console.log(testWidth);
+        if (testWidth > 190 && currentLine) {
+          lines.push(currentLine.trim());
+          currentLine = word + ' ';
+        } else {
+          currentLine = testLine;
+        }
+      }
+      lines.push(currentLine.trim()); // Add the last line
+
+      // Draw each line
+      lines.forEach((line, index) => {
+        page.drawText(line, {
+          x: this.scaleX(x + 5, viewport),
+          y: this.scaleY(y + 15 + (index * 8)), // Adjust Y position for each line
+          size: 12,
+          color: PDFLib.rgb(0, 0, 0),
+          maxWidth: 190,
+        });
+      });
+    } else {
+      page.drawText(text, {
+        x: this.scaleX(x + 5, viewport),
+        y: this.scaleY(y + 15, viewport),
+        size: 12,
+        color: PDFLib.rgb(0, 0, 0),
+        maxWidth: 190,
+      });
+    }
   }
 
   scaleX(x, viewport) {
