@@ -17,17 +17,73 @@ function createDraggableBlock(type) {
   block.style.backgroundColor = '#fff';
   block.style.cursor = 'move';
   block.style.display = 'block';
-  block.innerHTML = `
-    <img src="${type === 'text' ? '/public/assets/text-font.png' : '/public/assets/sign-here.jpg'}" alt="${type} icon" style="width: 100px; height: 20px; border: 5px solid ${signerColors[selectedSignerId]}">
-    
-    <input type="hidden" name="blockId[]" value="${blockId}">
-    <input type="hidden" name="blockType[]" value="${type}">
-    <input type="hidden" name="blockPosition[]" value="0,0">
-    <input type="hidden" name="blockPage[]" value="${document.getElementById('current-page').innerText}">
-    <input type="hidden" name="signerId[]" value="${selectedSignerId}">
-  `;
+  
+  if (type === 'editable-text') {
+    block.innerHTML = `
+      <div style="padding: 5px;">
+        <input type="text" class="editable-text-input" placeholder="Enter text here" style="width: 100%; border: none; outline: none;">
+      </div>
+      <input type="hidden" name="blockId[]" value="${blockId}">
+      <input type="hidden" name="blockType[]" value="${type}">
+      <input type="hidden" name="blockPosition[]" value="0,0">
+      <input type="hidden" name="blockPage[]" value="${document.getElementById('current-page').innerText}">
+      <input type="hidden" name="signerId[]" value="${selectedSignerId}">
+      <input type="hidden" name="blockText[]" value="">
+    `;
+  } else if (type === 'comment-box') {
+    block.style.width = '200px';
+    block.style.height = '100px';
+    block.style.backgroundColor = '#fff8e1';
+    block.style.border = '2px solid #ffc107';
+    block.style.borderRadius = '5px';
+    // block.style.padding = '10px';
+    block.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+    block.innerHTML = `
+      <div style="display: flex; flex-direction: column; height: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+          <span style="font-weight: bold; color: #ff9800;">Comment</span>
+          <button class="delete-comment" style="background: none; border: none; cursor: pointer; color: #ff5722;">×</button>
+        </div>
+        <textarea class="comment-textarea" placeholder="Enter your comment here..." style="flex-grow: 1; border: 1px solid #ffc107; border-radius: 3px; padding: 5px; resize: none; outline: none;"></textarea>
+      </div>
+      <input type="hidden" name="blockId[]" value="${blockId}">
+      <input type="hidden" name="blockType[]" value="${type}">
+      <input type="hidden" name="blockPosition[]" value="0,0">
+      <input type="hidden" name="blockPage[]" value="${document.getElementById('current-page').innerText}">
+      <input type="hidden" name="signerId[]" value="${selectedSignerId}">
+      <input type="hidden" name="blockText[]" value="">
+    `;
+  } else {
+    block.innerHTML = `
+      <img src="${type === 'text' ? '/public/assets/text-font.png' : '/public/assets/sign-here.jpg'}" alt="${type} icon" style="width: 100px; height: 20px; border: 5px solid ${signerColors[selectedSignerId]}">
+      <input type="hidden" name="blockId[]" value="${blockId}">
+      <input type="hidden" name="blockType[]" value="${type}">
+      <input type="hidden" name="blockPosition[]" value="0,0">
+      <input type="hidden" name="blockPage[]" value="${document.getElementById('current-page').innerText}">
+      <input type="hidden" name="signerId[]" value="${selectedSignerId}">
+    `;
+  }
+  
   document.getElementById('blocks-container').appendChild(block);
   makeDraggable(block, blockId);
+  
+  if (type === 'editable-text') {
+    const textInput = block.querySelector('.editable-text-input');
+    textInput.addEventListener('input', function() {
+      block.querySelector('input[name="blockText[]"]').value = this.value;
+    });
+  } else if (type === 'comment-box') {
+    const textarea = block.querySelector('.comment-textarea');
+    const deleteButton = block.querySelector('.delete-comment');
+    
+    textarea.addEventListener('input', function() {
+      block.querySelector('input[name="blockText[]"]').value = this.value;
+    });
+    
+    deleteButton.addEventListener('click', function() {
+      block.remove();
+    });
+  }
 }
 
 function showBlocksForPage(page) {

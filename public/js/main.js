@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize buttons
   const addTextBlockButton = document.getElementById('add-text-block');
   const addSignatureBlockButton = document.getElementById('add-signature-block');
+  const addEditableTextButton = document.getElementById('add-editable-text');
+  const addCommentBoxButton = document.getElementById('add-comment-box');
 
   if (addTextBlockButton) {
     addTextBlockButton.addEventListener('click', () => window.blocks.createDraggableBlock('text'));
@@ -22,5 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (addSignatureBlockButton) {
     addSignatureBlockButton.addEventListener('click', () => window.blocks.createDraggableBlock('signature'));
+  }
+
+  if (addEditableTextButton) {
+    addEditableTextButton.addEventListener('click', () => window.blocks.createDraggableBlock('editable-text'));
+  }
+
+  if (addCommentBoxButton) {
+    addCommentBoxButton.addEventListener('click', () => window.blocks.createDraggableBlock('comment-box'));
   }
 }); 

@@ -42,6 +42,8 @@ function validateEmail(input) {
   const sendButton = document.getElementById('create-doc-for-signing');
   const addTextBlockButton = document.getElementById('add-text-block');
   const addSignatureBlockButton = document.getElementById('add-signature-block');
+  const addEditableTextButton = document.getElementById('add-editable-text');
+  const addCommentBoxButton = document.getElementById('add-comment-box');
 
   if (!emailPattern.test(input.value)) {
     emailError.style.display = 'block';
@@ -54,6 +56,12 @@ function validateEmail(input) {
     addSignatureBlockButton.style.cursor = 'not-allowed';
     addTextBlockButton.style.backgroundColor = '#ccc';
     addSignatureBlockButton.style.backgroundColor = '#ccc';
+    addEditableTextButton.disabled = true;
+    addEditableTextButton.style.cursor = 'not-allowed';
+    addEditableTextButton.style.backgroundColor = '#ccc';
+    addCommentBoxButton.disabled = true;
+    addCommentBoxButton.style.cursor = 'not-allowed';
+    addCommentBoxButton.style.backgroundColor = '#ccc';
   } else {
     emailError.style.display = 'none';
     sendButton.disabled = false;
@@ -65,6 +73,12 @@ function validateEmail(input) {
     addSignatureBlockButton.style.cursor = 'pointer';
     addTextBlockButton.style.backgroundColor = '#007bff';
     addSignatureBlockButton.style.backgroundColor = '#28a745';
+    addEditableTextButton.disabled = false;
+    addEditableTextButton.style.cursor = 'pointer';
+    addEditableTextButton.style.backgroundColor = '#6c757d';
+    addCommentBoxButton.disabled = false;
+    addCommentBoxButton.style.cursor = 'pointer';
+    addCommentBoxButton.style.backgroundColor = '#ffc107';
     updateSignerDropdown();
   }
 }
