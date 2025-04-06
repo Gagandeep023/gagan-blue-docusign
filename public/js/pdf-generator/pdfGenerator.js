@@ -99,18 +99,27 @@ class PDFGenerator {
     page.drawRectangle({
       x: this.scaleX(x, viewport),
       y: this.scaleY(y, viewport),
-      width: 200,
+      width: 160,
       height: 100,
       color: PDFLib.rgb(1, 0.97, 0.88),
       borderColor: PDFLib.rgb(1, 0.76, 0.03),
       borderWidth: 2,
     });
 
+
+    page.drawText("Comment", {
+        x: this.scaleX(x + 5, viewport),
+        y: this.scaleY(y - 80, viewport),
+        size: 16,
+        color: PDFLib.rgb(1, 0.65, 0), // Orange text (#ffa500)
+        maxWidth: 190,
+    });
+
     // Add comment text
     page.drawText(text, {
       x: this.scaleX(x + 5, viewport),
-      y: this.scaleY(y + 80, viewport),
-      size: 10,
+      y: this.scaleY(y - 60, viewport),
+      size: 12,
       color: PDFLib.rgb(0, 0, 0),
       maxWidth: 190,
     });
