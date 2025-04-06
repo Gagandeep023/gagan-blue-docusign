@@ -3,10 +3,20 @@ class PDFGenerator {
     this.pdfDoc = null;
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
+    this.pdfCanvas = document.getElementById('pdf-canvas');
+    this.containerRect = this.pdfCanvas ? this.pdfCanvas.getBoundingClientRect() : null;
   }
 
   async generatePDFWithAnnotations(pdfUrl, blocks) {
     try {
+      // Get PDF canvas dimensions and position
+      const pdfCanvas = document.getElementById('pdf-canvas');
+      const containerRect = pdfCanvas.getBoundingClientRect();
+      const blockLeftBuffer = containerRect.left;
+      const blockTopBuffer = containerRect.top;
+      const blockWidth = containerRect.width;
+      const blockHeight = containerRect.height;
+
       // Load the original PDF
       const loadingTask = pdfjsLib.getDocument(pdfUrl);
       this.pdfDoc = await loadingTask.promise;
@@ -46,8 +56,15 @@ class PDFGenerator {
           height: viewport.height,
         });
 
-        // Add annotations for this page
-        const pageBlocks = blocks.filter(block => parseInt(block.blockPage) === i);
+        // Add annotations for this page with correct positioning
+        const pageBlocks = blocks.filter(block => parseInt(block.blockPage) === i)
+          .map(block => ({
+            ...block,
+            // Calculate actual positions relative to PDF dimensions
+            actualLeft: Math.floor(((block.blockLeft - blockLeftBuffer) / blockWidth) * viewport.width),
+            actualTop: Math.floor(((block.blockTop - blockTopBuffer) / blockHeight) * viewport.height)
+          }));
+
         await this.addAnnotations(newPage, pageBlocks, viewport);
       }
 
@@ -72,14 +89,15 @@ class PDFGenerator {
 
   async addAnnotations(page, blocks, viewport) {
     for (const block of blocks) {
-      const { blockType, blockLeft, blockTop, blockText } = block;
+      const { blockType, actualLeft, actualTop, blockText } = block;
+      console.log(actualLeft, actualTop, viewport);
       
       switch (blockType) {
         case 'editable-text':
-          await this.addEditableTextAnnotation(page, blockText, blockLeft, blockTop, viewport);
+          await this.addEditableTextAnnotation(page, blockText, actualLeft, actualTop, viewport);
           break;
         case 'comment-box':
-          await this.addCommentAnnotation(page, blockText, blockLeft, blockTop, viewport);
+          await this.addCommentAnnotation(page, blockText, actualLeft, actualTop, viewport);
           break;
       }
     }
@@ -98,7 +116,7 @@ class PDFGenerator {
     // Draw comment box
     page.drawRectangle({
       x: this.scaleX(x, viewport),
-      y: this.scaleY(y, viewport),
+      y: this.scaleY(y + 80, viewport),
       width: 160,
       height: 100,
       color: PDFLib.rgb(1, 0.97, 0.88),
@@ -108,8 +126,8 @@ class PDFGenerator {
 
 
     page.drawText("Comment", {
-        x: this.scaleX(x + 5, viewport),
-        y: this.scaleY(y - 80, viewport),
+        x: this.scaleX(x, viewport),
+        y: this.scaleY(y, viewport),
         size: 16,
         color: PDFLib.rgb(1, 0.65, 0), // Orange text (#ffa500)
         maxWidth: 190,
@@ -117,8 +135,8 @@ class PDFGenerator {
 
     // Add comment text
     page.drawText(text, {
-      x: this.scaleX(x + 5, viewport),
-      y: this.scaleY(y - 60, viewport),
+      x: this.scaleX(x, viewport),
+      y: this.scaleY(y + 20, viewport),
       size: 12,
       color: PDFLib.rgb(0, 0, 0),
       maxWidth: 190,
@@ -126,11 +144,11 @@ class PDFGenerator {
   }
 
   scaleX(x, viewport) {
-    return (x / 600) * viewport.width;
+    return x;  // No need to scale since we're already using PDF coordinates
   }
 
   scaleY(y, viewport) {
-    return viewport.height - (y / 820) * viewport.height;
+    return viewport.height - y;  // Flip Y coordinate since PDF coordinates start from bottom
   }
 }
 
