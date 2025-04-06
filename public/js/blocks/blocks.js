@@ -19,9 +19,13 @@ function createDraggableBlock(type) {
   block.style.display = 'block';
   
   if (type === 'editable-text') {
+    block.style.minWidth = '150px';
+    block.style.width = 'auto';
+    block.style.display = 'inline-block';
+    block.style.padding = '5px';
     block.innerHTML = `
-      <div style="padding: 5px;">
-        <input type="text" class="editable-text-input" placeholder="Enter text here" style="width: 100%; border: none; outline: none;">
+      <div style="display: inline-block; min-width: 100px;">
+        <input type="text" class="editable-text-input" placeholder="Enter text here" style="width: 100%; border: none; outline: none; min-width: 150px;">
       </div>
       <input type="hidden" name="blockId[]" value="${blockId}">
       <input type="hidden" name="blockType[]" value="${type}">
@@ -71,7 +75,25 @@ function createDraggableBlock(type) {
     const textInput = block.querySelector('.editable-text-input');
     textInput.addEventListener('input', function() {
       block.querySelector('input[name="blockText[]"]').value = this.value;
+      
+      const tempSpan = document.createElement('span');
+      tempSpan.style.visibility = 'hidden';
+      tempSpan.style.position = 'absolute';
+      tempSpan.style.whiteSpace = 'pre';
+      tempSpan.style.font = window.getComputedStyle(textInput).font;
+      tempSpan.textContent = this.value || this.placeholder;
+      
+      document.body.appendChild(tempSpan);
+      const contentWidth = Math.max(tempSpan.offsetWidth, 150); // Minimum width of 150px
+      document.body.removeChild(tempSpan);
+      
+      // Set input width to content width
+      textInput.style.width = contentWidth + 'px';
+      // Set block width to content width + 10px padding on each side
+      block.style.width = (contentWidth + 20) + 'px';
     });
+    
+    textInput.dispatchEvent(new Event('input'));
   } else if (type === 'comment-box') {
     const textarea = block.querySelector('.comment-textarea');
     const deleteButton = block.querySelector('.delete-comment');
