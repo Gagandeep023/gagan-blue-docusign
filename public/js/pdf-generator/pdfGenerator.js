@@ -75,12 +75,6 @@ class PDFGenerator {
       const { blockType, blockLeft, blockTop, blockText } = block;
       
       switch (blockType) {
-        case 'text':
-          await this.addTextAnnotation(page, blockText, blockLeft, blockTop, viewport);
-          break;
-        case 'signature':
-          await this.addSignatureAnnotation(page, blockLeft, blockTop, viewport);
-          break;
         case 'editable-text':
           await this.addEditableTextAnnotation(page, blockText, blockLeft, blockTop, viewport);
           break;
@@ -89,25 +83,6 @@ class PDFGenerator {
           break;
       }
     }
-  }
-
-  async addTextAnnotation(page, text, x, y, viewport) {
-    page.drawText(text, {
-      x: this.scaleX(x, viewport),
-      y: this.scaleY(y, viewport),
-      size: 12,
-      color: PDFLib.rgb(0, 0, 0),
-    });
-  }
-
-  async addSignatureAnnotation(page, x, y, viewport) {
-    // Add signature image or text
-    page.drawText('Signature', {
-      x: this.scaleX(x, viewport),
-      y: this.scaleY(y, viewport),
-      size: 12,
-      color: PDFLib.rgb(0, 0, 0),
-    });
   }
 
   async addEditableTextAnnotation(page, text, x, y, viewport) {
