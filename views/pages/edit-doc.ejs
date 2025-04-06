@@ -6,6 +6,9 @@
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 </script>
 
+<!-- Add PDF-Lib library -->
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
 <!-- Add meta tag for document name -->
 <meta name="doc-name" content="<%= docName %>">
 
@@ -13,6 +16,7 @@
 <script src="/public/js/pdf-viewer/PDFViewer.js"></script>
 <script src="/public/js/signers/signers.js"></script>
 <script src="/public/js/blocks/blocks.js"></script>
+<script src="/public/js/pdf-generator/pdfGenerator.js"></script>
 <script src="/public/js/main.js"></script>
 
 <div style="text-align: center; margin: 20px 0;">
@@ -30,6 +34,9 @@
   </button>
   <button id="add-comment-box" style="padding: 10px 20px; font-size: 16px; background-color: #ffc107; color: #000; border: none; border-radius: 5px; cursor: not-allowed; margin-left: 10px;" disabled>
     Add Comment Box
+  </button>
+  <button id="download-pdf" style="padding: 10px 20px; font-size: 16px; background-color: #17a2b8; color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+    Download PDF
   </button>
   <span id="page-number" style="margin-left: 20px; font-size: 16px;">Page: <span id="current-page">1</span></span>
 </div> 
